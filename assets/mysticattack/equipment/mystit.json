@@ -1,0 +1,14 @@
+{
+  "layers": {
+    "humanoid": [
+      {
+        "texture": "mysticattack:mystit"
+      }
+    ],
+    "humanoid_leggings": [
+      {
+        "texture": "mysticattack:mystit"
+      }
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "pack": {
+    "description": "Mystit (MysticAttack) - Erz, Werkzeuge, Ruestung",
+    "supported_formats": {
+      "min_inclusive": 15,
+      "max_inclusive": 99
+    }
+  }
+}

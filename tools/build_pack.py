@@ -155,19 +155,12 @@ def main():
         rec.save(p)
         made[f"mystit_{piece}"] = p
 
-    # --- Barren, Bruchstueck, Klumpen, Block (Vanilla-Form, Mystit-Farben) ---
-    extra = [
-        ("mystit_ingot", "v_item_iron_ingot.png", "item"),
-        ("mystit_nugget", "v_item_iron_nugget.png", "item"),
-        ("raw_mystit", "v_item_raw_iron.png", "item"),
-        ("mystit_block", "v_block_iron_block.png", "block"),
-    ]
-    for name, src, folder in extra:
-        van = Image.open(os.path.join(REF, src)).convert("RGBA")
-        rec = recolor(van)
-        assert list(van.getchannel("A").get_flattened_data()) == list(rec.getchannel("A").get_flattened_data())
+    # --- Kristall-Formen: Barren, Nugget, Roherz, Block (eigene Silhouetten) ---
+    import crystal_art
+    for name, img in crystal_art.build().items():
+        folder = "block" if name == "mystit_block" else "item"
         p = os.path.join(OUT_TEX, folder, name + ".png")
-        rec.save(p)
+        img.save(p)
         made[name] = p
 
     # --- Modelle ---

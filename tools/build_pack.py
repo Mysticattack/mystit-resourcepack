@@ -184,7 +184,7 @@ def main():
 
     wr(os.path.join(PACK, "pack.mcmeta"), {"pack": {
         "description": "Mystit (MysticAttack) - Erz, Werkzeuge, Ruestung",
-        "supported_formats": {"min_inclusive": 15, "max_inclusive": 99}}})
+        "min_format": 88, "max_format": 97}})
 
     icon = ore_texture(STONE, 7).resize((64, 64), Image.NEAREST)
     icon.save(os.path.join(PACK, "pack.png"))

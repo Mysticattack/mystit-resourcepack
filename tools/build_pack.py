@@ -101,6 +101,20 @@ def ore_texture(base_palette, seed):
     return im
 
 
+def jitter(im, amount=0.25, seed=1):
+    """Feine Koernung auf bereits umgefaerbten Sprites (Helligkeit +-7 Prozent)."""
+    rnd = random.Random(seed)
+    out = im.copy()
+    px = out.load()
+    for y in range(out.height):
+        for x in range(out.width):
+            r, g, b, a = px[x, y]
+            if a > 8 and rnd.random() < amount:
+                f = 0.93 if rnd.random() < 0.5 else 1.07
+                px[x, y] = (min(255, int(r * f)), min(255, int(g * f)), min(255, int(b * f)), a)
+    return out
+
+
 def wr(path, obj):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "w") as f:
@@ -128,7 +142,7 @@ def main():
         rec = recolor(van, split_wood=True)
         assert list(van.getchannel("A").get_flattened_data()) == list(rec.getchannel("A").get_flattened_data())
         p = os.path.join(OUT_TEX, "item", f"mystit_{t}.png")
-        rec.save(p)
+        jitter(rec, amount=0.22, seed=100 + len(t)).save(p)
         made[f"mystit_{t}"] = p
 
     # --- Ruestung am Spielermodell: Vanilla-Form, Mystit-Farben ---
@@ -152,7 +166,7 @@ def main():
         van = Image.open(os.path.join(REF, f"item_{piece}.png")).convert("RGBA")
         rec = recolor(van)
         p = os.path.join(OUT_TEX, "item", f"mystit_{piece}.png")
-        rec.save(p)
+        jitter(rec, amount=0.18, seed=200 + len(piece)).save(p)
         made[f"mystit_{piece}"] = p
 
     # --- Kristall-Formen: Barren, Nugget, Roherz, Block (eigene Silhouetten) ---

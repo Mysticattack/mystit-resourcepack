@@ -10,12 +10,27 @@ from PIL import Image
 
 P = {
     "o": (21, 11, 34, 255),
-    "E": (43, 20, 68, 255),
-    "D": (70, 32, 110, 255),
+    "E": (34, 16, 54, 255),
+    "D": (55, 26, 88, 255),
+    "d": (88, 44, 139, 255),
     "M": (107, 55, 168, 255),
+    "m": (131, 77, 193, 255),
     "L": (156, 99, 218, 255),
+    "l": (177, 127, 229, 255),
     "B": (199, 155, 240, 255),
     "W": (240, 227, 255, 255),
+}
+
+# Nachbartöne für die Koernung: helle und dunkle Variante je Stufe
+NEIGHBOURS = {
+    P["E"]: (None, P["D"]),
+    P["D"]: (P["E"], P["d"]),
+    P["d"]: (P["D"], P["M"]),
+    P["M"]: (P["d"], P["m"]),
+    P["m"]: (P["M"], P["L"]),
+    P["L"]: (P["m"], P["l"]),
+    P["l"]: (P["L"], P["B"]),
+    P["B"]: (P["l"], P["W"]),
 }
 
 GEM = [
@@ -76,6 +91,32 @@ RAW = [
 ]
 
 
+def grain(im, amount=0.28, seed=3, only=None):
+    """Koernung: Pixel innerhalb einer Farbstufe durch Nachbartöne ersetzen.
+
+    only = Menge von Farben, die gekoernt werden darf (None = alle ausser Outline/Glanz).
+    """
+    rnd = random.Random(seed)
+    px = im.load()
+    for y in range(16):
+        for x in range(16):
+            col = px[x, y]
+            if col[3] == 0 or col == P["o"] or col == P["W"]:
+                continue
+            if only is not None and col not in only:
+                continue
+            pair = NEIGHBOURS.get(col)
+            if not pair:
+                continue
+            if rnd.random() < amount:
+                darker, lighter = pair
+                # oben links heller, unten rechts dunkler -> gerichtete Koernung
+                pick = lighter if (rnd.random() < 0.5 + (7 - y) / 32 + (7 - x) / 32) else darker
+                if pick:
+                    px[x, y] = pick
+    return im
+
+
 def from_ascii(rows, glints=()):
     im = Image.new("RGBA", (16, 16), (0, 0, 0, 0))
     px = im.load()
@@ -123,10 +164,11 @@ def block(seed=5):
 
 def build():
     return {
-        "mystit_ingot": from_ascii(GEM, glints=[(6, 3)]),
-        "mystit_nugget": from_ascii(NUGGET, glints=[(7, 5)]),
-        "raw_mystit": from_ascii(RAW, glints=[(5, 5), (11, 2)]),
-        "mystit_block": block(),
+        "mystit_ingot": grain(from_ascii(GEM, glints=[(6, 3)]), amount=0.22, seed=11),
+        "mystit_nugget": grain(from_ascii(NUGGET, glints=[(7, 5)]), amount=0.2, seed=12),
+        "raw_mystit": grain(from_ascii(RAW, glints=[(5, 5), (11, 2)]), amount=0.26, seed=13),
+        "mystit_block": grain(block(), amount=0.3, seed=14,
+                              only={P["M"], P["D"], P["d"]}),
     }
 
 

@@ -18,6 +18,13 @@ Erz (Stein + Deepslate), fünf Werkzeuge, komplette Rüstung in Violett. Namespa
 | `mysticattack:mystit_chestplate` | Item | `textures/item/mystit_chestplate.png` |
 | `mysticattack:mystit_leggings` | Item | `textures/item/mystit_leggings.png` |
 | `mysticattack:mystit_boots` | Item | `textures/item/mystit_boots.png` |
+| `mysticattack:mystit_ingot` | Item | `textures/item/mystit_ingot.png` (`item/generated`) |
+| `mysticattack:mystit_nugget` | Item | `textures/item/mystit_nugget.png` |
+| `mysticattack:raw_mystit` | Item | `textures/item/raw_mystit.png` |
+| `mysticattack:mystit_block` | Block | `textures/block/mystit_block.png` (+ `models/block/mystit_block.json`) |
+
+Kette wie bei Eisen: Erz droppt `raw_mystit`, Schmelzen gibt `mystit_ingot`, neun Barren
+ergeben `mystit_block`, ein Barren neun `mystit_nugget`.
 
 Rüstung am Spielermodell: `equipment/mystit.json` plus
 `textures/entity/equipment/humanoid/mystit.png` (Helm, Brust, Stiefel) und

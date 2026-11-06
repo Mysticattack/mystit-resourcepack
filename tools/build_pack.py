@@ -155,8 +155,23 @@ def main():
         rec.save(p)
         made[f"mystit_{piece}"] = p
 
+    # --- Barren, Bruchstueck, Klumpen, Block (Vanilla-Form, Mystit-Farben) ---
+    extra = [
+        ("mystit_ingot", "v_item_iron_ingot.png", "item"),
+        ("mystit_nugget", "v_item_iron_nugget.png", "item"),
+        ("raw_mystit", "v_item_raw_iron.png", "item"),
+        ("mystit_block", "v_block_iron_block.png", "block"),
+    ]
+    for name, src, folder in extra:
+        van = Image.open(os.path.join(REF, src)).convert("RGBA")
+        rec = recolor(van)
+        assert list(van.getchannel("A").get_flattened_data()) == list(rec.getchannel("A").get_flattened_data())
+        p = os.path.join(OUT_TEX, folder, name + ".png")
+        rec.save(p)
+        made[name] = p
+
     # --- Modelle ---
-    for blk in ("mystit_ore", "mystit_deepslate_ore"):
+    for blk in ("mystit_ore", "mystit_deepslate_ore", "mystit_block"):
         wr(os.path.join(PACK, "assets", NS, "models", "block", blk + ".json"),
            {"parent": "block/cube_all", "textures": {"all": f"{NS}:block/{blk}"}})
         wr(os.path.join(PACK, "assets", NS, "items", blk + ".json"),
@@ -167,6 +182,12 @@ def main():
            {"parent": "item/handheld", "textures": {"layer0": f"{NS}:item/mystit_{t}"}})
         wr(os.path.join(PACK, "assets", NS, "items", f"mystit_{t}.json"),
            {"model": {"type": "minecraft:model", "model": f"{NS}:item/mystit_{t}"}})
+
+    for it in ("mystit_ingot", "mystit_nugget", "raw_mystit"):
+        wr(os.path.join(PACK, "assets", NS, "models", "item", f"{it}.json"),
+           {"parent": "item/generated", "textures": {"layer0": f"{NS}:item/{it}"}})
+        wr(os.path.join(PACK, "assets", NS, "items", f"{it}.json"),
+           {"model": {"type": "minecraft:model", "model": f"{NS}:item/{it}"}})
 
     for piece in ARMOR_ITEMS:
         wr(os.path.join(PACK, "assets", NS, "models", "item", f"mystit_{piece}.json"),
